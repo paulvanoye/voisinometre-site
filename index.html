@@ -1837,7 +1837,7 @@ window.VM_START=function(DATA){
     if(!MAP) return;
     var k=state.radius/111320, kl=k/Math.cos(S.lat*Math.PI/180), b=[[S.lon-kl,S.lat-k],[S.lon+kl,S.lat+k]];
     if(state.zone && state.zone.mode==='in'){ var xs=state.zone.pts.map(function(p){return p[1];}), ys=state.zone.pts.map(function(p){return p[0];}); b=[[Math.min.apply(null,xs),Math.min.apply(null,ys)],[Math.max.apply(null,xs),Math.max.apply(null,ys)]]; }
-    MAP.fitBounds(b,{padding:pad(), duration:instant?0:500, maxZoom:17.2});
+    MAP.resize(); MAP.setPadding(pad()); MAP.fitBounds(b,{padding:8, duration:instant?0:500, maxZoom:17.2});
   }
   function syncCtl(){
     $('layer-plan').setAttribute('aria-pressed',state.layer==='plan'); $('layer-sat').setAttribute('aria-pressed',state.layer==='sat');
