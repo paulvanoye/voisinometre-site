@@ -899,7 +899,7 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
         <b id="cap-title"></b>
         <p>Les ventes sont publiées par vagues, plusieurs fois par an. On vous prévient dès qu'une maison de votre rue apparaît, avec son prix. Rien d'autre.</p>
         <form class="cap-form" id="cap-form"><input type="email" id="cap-email" placeholder="vous@exemple.fr" aria-label="Votre adresse e-mail" autocomplete="email"><button type="submit">Me prévenir</button></form>
-        <p class="cap-ok" id="cap-ok" hidden>C'est noté. Dans cet aperçu, aucune adresse n'est enregistrée.</p>
+        <p class="cap-ok" id="cap-ok" hidden>C'est noté : vous serez prévenu à la prochaine publication des ventes.</p>
       </section>
 
       <section class="gauge" id="gauge" aria-label="Précision de l'estimation">
@@ -1009,14 +1009,14 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
     </div>
     <div class="actions">
       <div class="actions-row">
-        <button type="button" class="btn btn-main" id="agent-btn">Demander un avis sur place</button>
+        <button type="button" class="btn btn-main" id="agent-btn">Être rappelé pour en parler</button>
         <button type="button" class="btn btn-quiet" id="alert-btn" aria-expanded="false">Suivre les ventes de ma rue</button>
       </div>
-      <div class="act-pane" id="agent-pane" hidden><p>Votre demande est notée. Quand les agents partenaires seront en place, l'agent du quartier vous appellera pour convenir d'une visite. Un seul agent, pas cinq appels.</p><p class="act-note">Dans cet aperçu, rien n'est envoyé.</p></div>
+      <div class="act-pane" id="agent-pane" hidden><p>Votre demande de rappel est bien reçue : nous vous appelons sous 48 h ouvrées.</p></div>
       <div class="act-pane" id="alert-pane" hidden>
         <p>Un e-mail quand une nouvelle vente est enregistrée près de chez vous. Deux fois par an, pas plus.</p>
         <form class="act-form" id="alert-form"><input type="email" id="alert-email" placeholder="vous@exemple.fr" aria-label="Votre adresse e-mail" autocomplete="email"><button type="submit" id="alert-submit">Me prévenir</button></form>
-        <p class="act-note" id="alert-note" hidden>Dans cet aperçu, aucune adresse n'est enregistrée.</p>
+        <p class="act-note" id="alert-note" hidden>C'est noté : vous recevrez les nouvelles ventes de votre rue à chaque publication officielle.</p>
       </div>
     </div>
   </aside>
@@ -1342,9 +1342,11 @@ window.VM_START=function(DATA){
       box.innerHTML='<h3>Et si vous le louiez ?</h3><div class="rent-row"><div><b>'+nf.format(Math.round(l/10)*10)+' €</b><span>par mois hors charges, entre '+nf.format(Math.round(lo/10)*10)+' et '+nf.format(Math.round(hi/10)*10)+' €</span></div><div><b>'+y.toFixed(1).replace('.',',')+' %</b><span>de rendement brut par an, sur la valeur estimée</span></div></div>'+
         '<p class="d-note">Loyers d\'annonce des '+(ety()==='M'?'maisons':'appartements')+' à '+esc(S.city)+', Carte des loyers du ministère du Logement, 2025. Moyenne de la commune entière : selon le quartier, le loyer réel peut s\'en écarter.</p>';
     } else box.hidden=true;
-    $('agent-btn').textContent = W.motive==='v12' ? 'Préparer ma vente avec un agent du quartier' : 'Demander un avis sur place';
+    $('agent-btn').textContent = W.motive==='v12' ? 'Préparer ma vente : être rappelé' : 'Être rappelé pour en parler';
   }
-  $('cap-form').addEventListener('submit',function(ev){ ev.preventDefault(); $('cap-ok').hidden=false; });
+  $('cap-form').addEventListener('submit',function(ev){ ev.preventDefault(); var m=($('cap-email').value||'').trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(m)){ $('cap-email').focus(); return; }
+    W.email=m; W.call='non'; vmLead('alerte_rue'); $('cap-ok').hidden=false; this.querySelector('button').disabled=true; });
 
   /* ---------- Jauge de précision ---------- */
   var CHECK='<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
@@ -1365,7 +1367,7 @@ window.VM_START=function(DATA){
   function margin(){ if(!state.surfOk && !W.done.surf) return 30; var e=last&&last.est; return e?e.err:20; }
   function renderGauge(r, e){
     var it=precItems(), sc=precScore();
-    it.push({pts:25, got:0, t:'La visite d\'un agent du quartier', s:(W.motive==='v12'?'Vous pensez vendre d\'ici 12 mois : c\'est le moment. ':'')+'Le seul moyen de voir l\'intérieur. C\'est elle qui resserre vraiment la fourchette.', agent:true});
+    it.push({pts:25, got:0, t:'Un avis sur place', s:(W.motive==='v12'?'Vous pensez vendre d\'ici 12 mois : c\'est le moment. ':'')+'Seule une visite voit l\'intérieur et resserre vraiment la fourchette. Pendant la bêta, nous vous rappelons pour en parler.', agent:true});
     var lab = sc>=75?'Maximale en ligne':(sc>=60?'Bonne':(sc>=40?'Correcte':'Approximative'));
     $('g-label').textContent=lab; $('g-score').innerHTML=sc+'<small> / 100</small>';
     var seg=''; for(var i=0;i<20;i++) seg+='<span'+(i<Math.round(sc/5)?' class="on"':'')+'></span>'; $('g-bar').innerHTML=seg;
@@ -1374,7 +1376,7 @@ window.VM_START=function(DATA){
     var head = nOk ? '<li class="g-done"><span>'+nOk+' étape'+(nOk>1?'s':'')+' complétée'+(nOk>1?'s':'')+', '+sc+' points</span><button type="button" data-gopen="1">'+(state.gOpen?'Masquer':'Voir le détail')+'</button></li>' : '';
     $('g-list').innerHTML = head + it.map(function(x,i){
       var ok=x.got>=x.pts; if(ok && !state.gOpen) return '';
-      var act = x.agent ? '<button type="button" class="g-btn" data-g="agent">Prendre rendez-vous</button>' : (ok?'':'<button type="button" class="g-btn alt" data-wz="'+x.st+'">Compléter</button>');
+      var act = x.agent ? '<button type="button" class="g-btn" data-g="agent">Être rappelé</button>' : (ok?'':'<button type="button" class="g-btn alt" data-wz="'+x.st+'">Compléter</button>');
       return '<li class="'+(ok?'ok':'')+(i===nxt?' is-next':'')+'"><span class="g-ic">'+(ok?CHECK:'')+'</span><span class="g-t">'+esc(x.t)+(x.s?'<small>'+esc(x.s)+'</small>':'')+'</span><span class="g-pts">'+(ok?x.got:'+'+(x.pts-x.got))+' pts</span>'+(act?'<div class="g-act">'+act+'</div>':'')+'</li>';
     }).join('');
   }
@@ -2019,7 +2021,9 @@ window.VM_START=function(DATA){
   $('fiche-x').addEventListener('click',function(){ state.sel=null; renderSales(last); drawMap(); });
   $('agent-btn').addEventListener('click',function(){ $('agent-pane').hidden=false; $('alert-pane').hidden=true; $('alert-btn').setAttribute('aria-expanded','false'); });
   $('alert-btn').addEventListener('click',function(){ var p=$('alert-pane'); p.hidden=!p.hidden; $('agent-pane').hidden=true; this.setAttribute('aria-expanded',!p.hidden); });
-  $('alert-form').addEventListener('submit',function(e){ e.preventDefault(); $('alert-note').hidden=false; });
+  $('alert-form').addEventListener('submit',function(e){ e.preventDefault(); var m=($('alert-email').value||'').trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(m)){ $('alert-email').focus(); return; }
+    W.email=m; W.call='non'; vmLead('alerte_rue'); $('alert-note').hidden=false; $('alert-submit').disabled=true; });
 
 
   /* ---------- Parcours guidé ---------- */
@@ -2357,8 +2361,8 @@ window.VM_START=function(DATA){
     if(on){
       h='<h4>Mon compte</h4><small>'+esc(ACCT.email)+'</small>';
       h+=(ACCT.searches||[]).map(function(x,i){ return '<div class="acct-row"><span><b>'+esc(x.rue)+'</b><small>'+(x.mid?nf.format(x.mid)+' €, ':'')+'le '+esc(fmtD(x.d))+'</small></span><button type="button" class="sm" data-acc="open:'+i+'">Reprendre</button></div>'; }).join('');
-      h+='<small>'+(ACCT.call==='oui'?'Rappel par l\'agent partenaire : demandé.':'Vous ne serez pas appelé.')+'</small>';
-      h+='<button type="button" class="lk" data-acc="call">'+(ACCT.call==='oui'?'Je ne souhaite plus être appelé':'Être rappelé par l\'agent partenaire')+'</button>';
+      h+='<small>'+(ACCT.call==='oui'?'Rappel demandé.':'Vous ne serez pas appelé.')+'</small>';
+      h+='<button type="button" class="lk" data-acc="call">'+(ACCT.call==='oui'?'Je ne souhaite plus être appelé':'Être rappelé')+'</button>';
       h+='<button type="button" class="lk" data-acc="out">Se déconnecter</button><button type="button" class="lk" data-acc="del">Supprimer mon compte et mes recherches</button>';
     } else if(ACCT){
       h='<h4>Se connecter</h4><small>Saisissez votre e-mail : la version en ligne vous enverra un lien de connexion, sans mot de passe.</small><input type="email" id="acc-mail" placeholder="vous@exemple.fr" aria-label="Votre adresse e-mail"><button type="button" class="sm" data-acc="in">Recevoir le lien</button><small id="acc-err" hidden>Aucun compte avec cet e-mail sur cet appareil.</small>';
