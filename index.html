@@ -625,6 +625,10 @@ body.m-rech .panel-scroll>#pane-v{max-width:760px}
 .vf-in{position:relative;display:block}
 .vf-in i{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--muted)}
 .vf .zseg{grid-template-columns:1fr 1fr}
+.v-share{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.v-share button,.v-share a{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:600;font-size:14px;text-decoration:none}
+.v-share small{color:var(--muted);font-size:13px}
+body.m-bien .qh-rank{display:none!important}
 @media (max-width:520px){ .vf{grid-template-columns:1fr} }
 .v-res{border:1px solid var(--line);border-left-width:7px;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:3px}
 .v-res.v-ok{border-left-color:#2e9e5b}.v-res.v-bas{border-left-color:#3f84c8}.v-res.v-moy{border-left-color:#e3a20c}.v-res.v-haut{border-left-color:#c8442a}
@@ -976,10 +980,11 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
           <p class="muted">Vous avez vu un bien sur Leboncoin, SeLoger ou en vitrine ? Recopiez ce que dit l'annonce : on le compare aux ventes réelles du même secteur.</p>
           <div class="vf">
             <label class="vf-f">Secteur ou commune<select id="v-sec"></select></label>
-            <label class="vf-f">Rue (facultatif)<input type="text" id="v-rue" placeholder="ex. rue de la Colline" autocomplete="off"></label>
+            <label class="vf-f">Rue (facultatif)<input type="text" id="v-rue" list="v-rues" placeholder="ex. rue de la Colline" autocomplete="off"><datalist id="v-rues"></datalist></label>
             <div class="vf-f">Type<div class="zseg" id="v-type" role="group" aria-label="Type de bien"><button type="button" data-vt="M" aria-pressed="true">Maison</button><button type="button" data-vt="A" aria-pressed="false">Appartement</button></div></div>
             <label class="vf-f">DPE de l'annonce<select id="v-dpe"><option value="">Je ne sais pas</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></label>
             <label class="vf-f">Surface habitable<span class="vf-in"><input type="number" id="v-surf" min="10" max="500" inputmode="numeric" placeholder="90"><i>m²</i></span></label>
+            <label class="vf-f" id="v-terr-f">Terrain (facultatif)<span class="vf-in"><input type="number" id="v-terr" min="0" max="20000" inputmode="numeric" placeholder="300"><i>m²</i></span></label>
             <label class="vf-f">Prix affiché<span class="vf-in"><input type="number" id="v-prix" min="10000" step="1000" inputmode="numeric" placeholder="250000"><i>€</i></span></label>
           </div>
         </section>
@@ -2234,6 +2239,9 @@ window.VM_START=function(DATA){
     $('v-sec').innerHTML=Object.keys(cnt).filter(function(k){ return cnt[k]>=40; }).sort(function(a,b){ return a.localeCompare(b,'fr'); }).map(function(k){ return '<option>'+esc(k)+'</option>'; }).join(''); })();
   function vNorm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/^\d+\s*(bis|ter|b|t|q)?\s+/,'')
     .replace(/\b(rue|avenue|av|boulevard|bd|place|pl|chemin|allee|impasse|quai|route|square|cite|residence|de|du|des|la|le|les|l|d)\b/g,' ').replace(/[^a-z0-9]+/g,' ').trim(); }
+  function vRues(){ var sec=$('v-sec').value, seen={}, L=[];
+    D.sales.forEach(function(x){ if(x.q!==sec || x.ty!==V.ty) return; var n=x.a.replace(/^\d+\s*(?:(?:BIS|TER|A|B|C|T|Q)\b)?\s*/i,''); var k=n.toLowerCase(); if(!seen[k]){ seen[k]=1; L.push(n); } });
+    $('v-rues').innerHTML=L.sort(function(a,b){ return a.localeCompare(b,'fr'); }).map(function(n){ return '<option value="'+esc(n)+'">'; }).join(''); }
   function vMois(d){ return MONTHS[+d.slice(5,7)-1]+' '+d.slice(0,4); }
   function vCalc(){
     var sec=$('v-sec').value, ty=V.ty, s=+$('v-surf').value, px=+$('v-prix').value, dpe=$('v-dpe').value, rue=vNorm($('v-rue').value), o=$('v-out');
@@ -2241,9 +2249,11 @@ window.VM_START=function(DATA){
     var I=ST.idx[sec], ix=((I&&I[ty])||IDXCUD[ty]);
     var base=D.sales.filter(function(x){ return x.ty===ty && x.q===sec && x.s>0 && x.p>0 && ix[x.d.slice(0,4)]; });
     var pick=function(lo,hi,y0,byRue){ return base.filter(function(x){ return x.s>=s*lo && x.s<=s*hi && +x.d.slice(0,4)>=y0 && (!byRue || vNorm(x.a).indexOf(rue)>=0); }); };
+    var terr=ty==='M' ? +$('v-terr').value : 0;
     var lvl='rue', P=rue.length>=3 ? pick(.7,1.4,2019,true) : [];
     if(P.length<6){ lvl='sec'; P=pick(.8,1.25,2021); }
     if(P.length<8) P=pick(.65,1.5,2019);
+    var tUse=false; if(terr>0){ var PT=P.filter(function(x){ return x.t>=terr*0.5 && x.t<=terr*2; }); if(PT.length>=8){ P=PT; tUse=true; } }
     if(P.length<5){ o.innerHTML='<p class="muted">Trop peu de ventes comparables à '+esc(sec)+' pour ce type et cette surface. Essayez un secteur voisin.</p>'; return; }
     var kn=P.filter(function(x){ return x.e; }), eU=kn.length ? kn.reduce(function(a,x){ return a+effOf(x.e); },0)/kn.length : 0, eMe=dpe?effOf(dpe):eU;
     P.forEach(function(x){ x.vv=x.p/x.s*ix['2025']/ix[x.d.slice(0,4)]/(1+(x.e?effOf(x.e):eU))*(1+eMe); });
@@ -2259,18 +2269,33 @@ window.VM_START=function(DATA){
     o.innerHTML='<div class="v-res v-'+vd[0]+'"><span class="v-lab">Écart avec le prix médian</span><b class="v-big">'+(g>0?'+':'')+g+' %</b><span class="v-t">'+vd[1]+'</span><p class="muted">'+vd[2]+'</p></div>'+
       '<div class="v-gauge" aria-hidden="true"><div class="v-band" style="left:'+X(lo)+'%;width:'+(X(hi)-X(lo)).toFixed(1)+'%"></div><i class="v-mid" style="left:'+X(mid)+'%"></i><i class="v-px" style="left:'+X(px)+'%"></i></div>'+
       '<div class="v-leg"><span>Marché : '+eur(k1000(lo))+' à '+eur(k1000(hi))+' (médiane '+eur(k1000(mid))+')</span><span><b>Annonce : '+eur(px)+'</b>, '+nf.format(Math.round(px/s))+' €/m²</span></div>'+
-      '<p class="muted">D\'après '+P.length+' ventes réelles de '+nom+' '+(lvl==='rue'?'dans cette rue':'à '+esc(sec))+', de surface proche, prix ramenés à 2025'+(dpe?' et corrigés vers un DPE '+dpe:'')+'. Précision : '+(lvl==='rue'?'la rue':'le secteur, faute d\'assez de ventes dans la rue')+'. Une annonce sans adresse exacte ne permet pas mieux.</p>'+
+      '<p class="muted">D\'après '+P.length+' ventes réelles de '+nom+' '+(lvl==='rue'?'dans cette rue':'à '+esc(sec))+', de surface proche'+(tUse?', terrain de '+nf.format(Math.round(terr*0.5))+' à '+nf.format(terr*2)+' m²':'')+', prix ramenés à 2025'+(dpe?' et corrigés vers un DPE '+dpe:'')+'. Précision : '+(lvl==='rue'?'la rue':'le secteur, faute d\'assez de ventes dans la rue')+'. Une annonce sans adresse exacte ne permet pas mieux.</p>'+
       '<p class="muted">Bon à savoir : les prix notariés sont en général hors frais d\'agence. Une annonce « frais d\'agence inclus » paraît donc 4 à 6 % plus chère qu\'elle ne l\'est.</p>'+
-      '<h3>Les ventes comparables</h3><div class="v-list">'+L.map(function(x){ return '<div><span>'+esc(x.a.replace(/^\d+\s*(?:(?:BIS|TER|B|T|Q)\b)?\s*/i,''))+'<small>'+vMois(x.d)+', '+x.s+' m²'+(x.e?', DPE '+x.e:'')+'</small></span><b>'+eur(k1000(x.p))+'</b></div>'; }).join('')+'</div>'+
+      '<h3>Les ventes comparables</h3><div class="v-list">'+L.map(function(x){ return '<div><span>'+esc(x.a.replace(/^\d+\s*(?:(?:BIS|TER|A|B|C|T|Q)\b)?\s*/i,''))+'<small>'+vMois(x.d)+', '+x.s+' m²'+(x.e?', DPE '+x.e:'')+'</small></span><b>'+eur(k1000(x.p))+'</b></div>'; }).join('')+'</div>'+
+      '<div class="v-share"><button type="button" id="v-copy">Copier le lien de cette analyse</button><a id="v-wa" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Cette annonce '+(ty==='M'?'de maison':'d\'appartement')+' à '+sec+' est à '+(g>0?'+':'')+g+' % du prix médian des ventes réelles : '+vLink())+'">Envoyer sur WhatsApp</a><small id="v-copied" hidden>Lien copié</small></div>'+
       '<button type="button" class="cta" id="v-alert">Être alerté des ventes de ce type</button>';
+    try{ history.replaceState(null,'',vLink()+location.hash); }catch(e){}
   }
+  function vLink(){ var q=[$('v-sec').value, V.ty, $('v-surf').value, $('v-prix').value, $('v-dpe').value, $('v-terr').value, $('v-rue').value].map(function(v){ return encodeURIComponent(v||''); }).join('~');
+    return location.origin+location.pathname+'?annonce='+q; }
   $('pane-v').addEventListener('input',vCalc); $('pane-v').addEventListener('change',vCalc);
-  $('v-type').addEventListener('click',function(e){ var b=e.target.closest('[data-vt]'); if(!b) return; V.ty=b.dataset.vt; [].forEach.call(this.children,function(x){ x.setAttribute('aria-pressed',x===b); }); vCalc(); });
-  $('v-out').addEventListener('click',function(e){ if(e.target.id==='v-alert') setTab('r'); });
+  $('v-type').addEventListener('click',function(e){ var b=e.target.closest('[data-vt]'); if(!b) return; V.ty=b.dataset.vt; [].forEach.call(this.children,function(x){ x.setAttribute('aria-pressed',x===b); }); $('v-terr-f').hidden=V.ty!=='M'; vRues(); vCalc(); });
+  $('v-out').addEventListener('click',function(e){
+    if(e.target.id==='v-alert') setTab('r');
+    if(e.target.id==='v-copy'){ var u=vLink(), ok=function(){ $('v-copied').hidden=false; };
+      if(navigator.clipboard) navigator.clipboard.writeText(u).then(ok,function(){ window.prompt('Copiez ce lien :',u); }); else window.prompt('Copiez ce lien :',u); }
+  });
+  $('v-sec').addEventListener('change',vRues);
+  setTimeout(function(){ var m=/[?&]annonce=([^&#]*)/.exec(location.search); if(!m) return;
+    var a=m[1].split('~').map(function(v){ try{ return decodeURIComponent(v); }catch(e){ return ''; } });
+    if([].some.call($('v-sec').options,function(o){ return o.value===a[0]; })) $('v-sec').value=a[0];
+    V.ty=a[1]==='A'?'A':'M'; [].forEach.call($('v-type').children,function(x){ x.setAttribute('aria-pressed',x.dataset.vt===V.ty); });
+    $('v-surf').value=a[2]||''; $('v-prix').value=a[3]||''; $('v-dpe').value=a[4]||''; $('v-terr').value=a[5]||''; $('v-rue').value=a[6]||'';
+    vCalc(); $('tab-v').click(); vRues(); if(isMobile()) setSnap('full'); setTimeout(function(){ $('v-out').scrollIntoView({block:'start'}); },150); }, 0);
   $('tab-v').addEventListener('click',function(){
     if(W.on){ W.on=false; $('wiz').hidden=true; $('panel-scroll').classList.remove('wiz-on'); $('panel').classList.remove('wiz-on'); render(); }
     if(!$('v-out').querySelector('.v-res') && S.q && [].some.call($('v-sec').options,function(o){ return o.value===S.q; })) $('v-sec').value=S.q;
-    setTab('v');
+    setTab('v'); vRues();
   });
 
   /* ---------- Compte (apercu : enregistre dans ce navigateur) ---------- */
