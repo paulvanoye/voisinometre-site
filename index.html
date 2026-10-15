@@ -646,6 +646,13 @@ body.m-bien .qh-rank{display:none!important}
 .v-list>div:first-child{border-top:0}
 .v-list small{display:block;color:var(--muted);font-size:12.5px;font-weight:400}
 .v-list b{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.grp .gn{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;margin-right:5px;border-radius:10px;background:#13202A;color:#fff;font-size:11.5px;font-weight:800;box-shadow:0 0 0 1.5px #fff}
+.mini.grp{padding-left:3px}
+.fg-list{max-height:230px;overflow:auto;margin-top:8px;border-top:1px solid var(--map-chrome-line)}
+.fg-list>div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--map-chrome-line);font-size:13px}
+.fg-list small{display:block;color:var(--map-chrome-muted);font-size:12px}
+.fg-list span:last-child{text-align:right;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.panel,.world.is-anim,.tape-band,.tape-band2{transition:none}}
 
 /* ===== Page « Mon bien » : pleine largeur, sans carte ===== */
@@ -1832,7 +1839,7 @@ window.VM_START=function(DATA){
     MAP.on('click', function(e){
       if(state.drawing || dragged) return;
       var f=MAP.queryRenderedFeatures(e.point,{layers:['parcels','me']});
-      if(f.length){ if(f[0].layer.id==='me') select('me',false); else select(f[0].properties.id,false); }
+      if(f.length){ if(f[0].layer.id==='me') select('me',false); else { var fid=f[0].properties.id, gk=Object.keys(GRP).filter(function(k){ return GRP[k].some(function(x){ return x.id===fid; }); })[0]; select(gk||fid,false); } }
       else if(EXPLORE && window.VM_EXPLORE_AT) window.VM_EXPLORE_AT(e.lngLat);
     });
     MAP.on('mousemove','parcels',function(e){ MAP.getCanvas().style.cursor='pointer'; hotCard(e.features[0].properties.id); });
@@ -1857,13 +1864,14 @@ window.VM_START=function(DATA){
     return nf.format(Math.round(x.p/x.s))+(big?'<small>€/m²</small>':'');
   }
   var pinEl=null;
+  var GRP={};
   function drawMap(){
     var r=last; if(!r) return;
     mapEl.classList.toggle('sat', state.layer==='sat');
     if(mapReady){
       MAP.setLayoutProperty('sat','visibility', state.layer==='sat'?'visible':'none');
       MAP.getSource('ring').setData(fc((state.secOnly||(state.zone&&state.zone.mode==='in'))?[]:[circle(S.lat,S.lon,state.radius)]));
-      var feats=[]; r.pool.forEach(function(x){ var g=geomOf(x.k); if(!g) return; feats.push({type:'Feature', geometry:g, properties:{id:x.id, t:tone(x,r.medAdj), top:r.top.indexOf(x)>=0, sel:state.sel===x.id}}); });
+      var feats=[]; r.pool.forEach(function(x){ var g=geomOf(x.k); if(!g) return; feats.push({type:'Feature', geometry:g, properties:{id:x.id, t:tone(x,r.medAdj), top:r.top.indexOf(x)>=0, sel:state.sel===x.id || !!(GRP[state.sel] && GRP[state.sel].indexOf(x)>=0)}}); });
       MAP.getSource('parcels').setData(fc(feats));
       var inP={}; r.pool.forEach(function(x){ inP[x.id]=1; });
       MAP.getSource('others').setData(fc(D.sales.filter(function(x){ return !inP[x.id] && (state.type==='B' || x.ty===state.type) && +x.d.slice(0,4)>=state.from && +x.d.slice(0,4)<=state.to; }).map(function(x){ return {type:'Feature',geometry:{type:'Point',coordinates:[x.lon,x.lat]},properties:{}}; })));
@@ -1879,8 +1887,20 @@ window.VM_START=function(DATA){
       b.setAttribute('aria-label',x.a+', '+eur(x.p)+', '+nf.format(Math.round(x.p/x.s))+' euros par mètre carré');
       marks.appendChild(b); labs.push({el:b,lat:x.lat,lon:x.lon,top:big});
     };
-    r.rest.forEach(function(x){ mk(x,false); });
-    r.top.slice().reverse().forEach(function(x){ mk(x,true); });
+    var byPos={}, order=[], single={}; GRP={};
+    r.pool.forEach(function(x){ var k=x.lat.toFixed(5)+','+x.lon.toFixed(5); if(!byPos[k]){ byPos[k]=[]; order.push(k); } byPos[k].push(x); });
+    order.forEach(function(k){ var L=byPos[k]; if(L.length===1) single[L[0].id]=1; else GRP['g:'+k]=L.sort(function(a,b){ return a.d<b.d?1:-1; }); });
+    var mkG=function(id, L){
+      var big=L.some(function(x){ return r.top.indexOf(x)>=0; }), med=median(L.map(function(x){ return x.adj; }));
+      var b=document.createElement('button'); b.type='button'; b.dataset.id=id;
+      b.className=(big?'pill':'mini')+' grp t-'+tone({adj:med},r.medAdj)+(state.sel===id?' is-sel':'');
+      b.innerHTML='<span class="gn">'+L.length+'</span>'+(state.lab==='tot' ? nf.format(Math.round(median(L.map(function(x){ return x.p; }))/1000))+' k€' : nf.format(Math.round(median(L.map(function(x){ return x.p/x.s; }))))+(big?'<small>€/m²</small>':''));
+      b.setAttribute('aria-label', L.length+' ventes au '+L[0].a+', médiane '+nf.format(Math.round(median(L.map(function(x){ return x.p/x.s; }))))+' euros par mètre carré');
+      marks.appendChild(b); labs.push({el:b,lat:L[0].lat,lon:L[0].lon,top:true,grp:big});
+    };
+    r.rest.forEach(function(x){ if(single[x.id]) mk(x,false); });
+    Object.keys(GRP).forEach(function(id){ mkG(id, GRP[id]); });
+    r.top.slice().reverse().forEach(function(x){ if(single[x.id]) mk(x,true); });
     pinEl=document.createElement('button'); pinEl.type='button'; pinEl.className='pin me'+(state.sel==='me'?' is-sel':''); pinEl.dataset.id='me';
     pinEl.innerHTML = EXPLORE ? 'Point exploré' : (sameType() ? 'Votre bien' : 'Bien étudié')+(S.last?'<small>vendu '+(state.lab==='tot' ? nf.format(Math.round(S.last.p/1000))+' k€' : nf.format(Math.round(S.last.p/S.s))+' €/m²')+' en '+S.last.d.slice(0,4)+'</small>':'');
     pinEl.setAttribute('aria-label','Votre bien'+(S.last?', dernière vente '+eur(S.last.p)+' en '+when(S.last.d):''));
@@ -1898,7 +1918,7 @@ window.VM_START=function(DATA){
     mapEl.classList.toggle('compact', compact);
     var sp=MAP.project([S.lon,S.lat]); placed.push([sp.x-60, sp.y+8, 120, 42]);
     var hit=function(b){ for(var i=0;i<placed.length;i++){ var a=placed[i]; if(b[0]<a[0]+a[2] && a[0]<b[0]+b[2] && b[1]<a[1]+a[3] && a[1]<b[1]+b[3]) return true; } return false; };
-    labs.forEach(function(l){ if(l.top){ var w=tot?(compact?64:104):(compact?52:94); placed.push([l.x-w/2, l.y-36, w, 30]); } });
+    labs.forEach(function(l){ if(l.top){ var w=tot?(compact?64:104):(compact?52:94); if(l.grp===false) w+=10; placed.push([l.x-w/2, l.y-36, w, 30]); } });
     labs.forEach(function(l){
       if(l.top) return;
       var mw=tot?56:46, b=[l.x-mw/2, l.y-26, mw, 22];
@@ -1929,6 +1949,16 @@ window.VM_START=function(DATA){
       if(e && S.last){ var g=k1000(e.mid)-S.last.p, gp=Math.round(g/S.last.p*100); h+='<div class="fiche-facts">Estimé aujourd\'hui : <b>'+eur(k1000(e.mid))+'</b>, <span class="fiche-gain">'+(g>=0?'+':'−')+eur(Math.abs(g))+' ('+(g>=0?'+':'−')+Math.abs(gp)+' %)</span> depuis l\'achat</div>'; }
       h+='<div class="fiche-facts" style="color:var(--map-chrome-muted)">Cette vente n\'entre pas dans les comparables : on n\'estime pas un bien avec son propre prix, il sert de repère à part.</div>';
       $('fiche-body').innerHTML=h; return;
+    }
+    if(state.sel && GRP[state.sel] && last){
+      var L=GRP[state.sel], md=median(L.map(function(x){ return x.adj; })), raw=median(L.map(function(x){ return x.p/x.s; }));
+      var ac={}; L.forEach(function(x){ ac[x.a]=(ac[x.a]||0)+1; }); var adr=Object.keys(ac).sort(function(a,b){ return ac[b]-ac[a]; })[0], nAdr=Object.keys(ac).length;
+      fiche.hidden=false; $('legend-map').hidden=true;
+      $('fiche-body').innerHTML='<div class="fiche-row"><b>'+esc(adr)+(nAdr>1?' <small style="font-weight:400">et '+(nAdr-1)+' autre'+(nAdr>2?'s':'')+' entrée'+(nAdr>2?'s':'')+'</small>':'')+'</b><b class="fiche-price">'+L.length+' ventes</b></div>'+
+        '<div class="fiche-facts">Même immeuble ou même parcelle, de '+when(L[L.length-1].d)+' à '+when(L[0].d)+'. Médiane '+nf.format(Math.round(raw/10)*10)+' €/m², soit '+nf.format(Math.round(md/10)*10)+' €/m² aux prix de 2025 : '+relTxt({adj:md},last.medAdj)+' des ventes retenues.</div>'+
+        '<div class="fg-list">'+L.map(function(x){ return '<div><span>'+when(x.d)+'<small>'+x.s+' m²'+(x.n?', '+x.n+(x.n>1?' pièces':' pièce'):'')+(x.e?', DPE '+x.e:'')+'</small></span><span><b>'+eur(x.p)+'</b><small>'+nf.format(Math.round(x.p/x.s))+' €/m²</small></span></div>'; }).join('')+'</div>'+
+        '<div class="fiche-chips"><a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+L[0].lat+','+L[0].lon+'" target="_blank" rel="noopener">Voir la façade</a></div>';
+      return;
     }
     var x = state.sel ? D.sales.filter(function(s){return s.id===state.sel;})[0] : null;
     if(!x || !last || last.pool.indexOf(x)<0){ fiche.hidden=true; $('legend-map').hidden=!last || !last.medAdj; return; }
