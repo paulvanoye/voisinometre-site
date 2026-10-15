@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Voisinomètre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
@@ -306,7 +305,7 @@ h1,h2,p{margin:0}
 .welcome button{background:none;border:0;padding:0;text-decoration:underline;font-weight:600;color:var(--ink)}
 .unlock{display:none;flex-direction:column;align-items:flex-start;gap:10px;font-size:14px}
 body.locked .unlock{display:flex}
-body.locked #ans-big,body.locked #ans-range,body.locked #ans-mix,body.locked #how,body.locked #pane-b .cmp,body.locked #pane-b .rent{filter:blur(16px);user-select:none;pointer-events:none}
+
 .wz-field{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:16px}
 .wz-legal{font-size:12.5px;color:var(--muted);line-height:1.45}
 .story{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 14px}
@@ -647,6 +646,22 @@ body.m-bien .bar .tabs,.bar .tabs{box-shadow:none;max-width:none}
 .filt-head{flex-wrap:wrap;row-gap:8px}
 
 body.m-rech .home,body.m-rech .filt,body.m-rech .actions,body.m-exp .actions{display:none!important}
+body.m-exp .filt-note{display:none}
+body:not(.m-exp) .qhero,body:not(.m-exp) .qh-rank{display:none!important}
+.qh-rank{margin-top:16px}
+.qhero{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.qh-lab{font-size:13px;font-weight:600;color:var(--muted)}
+.qh-big{font-family:var(--font-display);font-weight:800;font-size:clamp(40px,4.4vw,52px);line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+.qh-big small{font-size:.42em;font-weight:700;letter-spacing:0;margin-left:4px}
+.qh-sub{font-size:15px;font-weight:500}
+.qh-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.qh-chip{border:1px solid var(--line);border-radius:12px;padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.qh-chip b{font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1.1;font-variant-numeric:tabular-nums}
+.qh-chip span{font-size:12.5px;color:var(--muted);line-height:1.3}
+.qh-chip b sup{font-size:.55em}
+@media (max-width:760px){ .qh-chips{grid-template-columns:repeat(3,minmax(0,1fr))} .qh-chip b{font-size:17px} .qh-big{font-size:40px} }
+.rk-more summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+.rk-more .rk-rows{margin-top:8px}
 body.m-rech .panel-scroll>#pane-r{max-width:760px}
 #pane-r{display:flex;flex-direction:column;gap:18px}
 .rc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px}
@@ -712,6 +727,8 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
 
       <section class="home" id="home">
         <h1 id="home-title"></h1><p class="home-sub" id="home-sub"></p>
+        <div class="qhero" id="q-hero" hidden></div>
+        <div class="rank qh-rank" id="rk-q"></div>
       </section>
 
 
@@ -784,7 +801,7 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
         <p class="answer-lead" id="ans-lead"></p>
         <div class="answer-big" id="ans-big"></div>
         <p class="answer-between" id="ans-range"></p>
-        <div class="unlock" id="unlock"><p>Votre estimation est prête. Indiquez votre e-mail pour la voir : elle reste enregistrée dans votre compte.</p><button type="button" class="wz-go" id="unlock-btn">Voir mon estimation</button></div>
+        <div class="unlock" id="unlock"><p><b>Suivez le prix de votre bien.</b> Nous vous envoyons la nouvelle estimation à chaque publication des ventes officielles, environ deux fois par an. Rien d'autre.</p><button type="button" class="wz-go" id="unlock-btn">Suivre le prix de mon bien</button></div>
         <div class="ans-mix" id="ans-mix" hidden><div class="mix" aria-hidden="true"><i id="mx-a"></i><i id="mx-v"></i></div><span id="mx-t"></span></div>
         <p class="answer-note" id="ans-note"></p>
         <details class="how" id="how"><summary>Voir comment c'est calculé</summary><ol id="how-list"></ol></details>
@@ -879,19 +896,18 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
         <section class="rc" id="r-lead"></section>
       </div>
       <div class="pane" id="pane-q" role="tabpanel" aria-labelledby="tab-q" hidden>
-        <section class="qhead blk"><h2 id="q-title"></h2><p class="blk-sub" id="q-sub"></p></section>
-        <section class="kpis" id="kpis"></section>
+        <section class="qhead blk" hidden><h2 id="q-title"></h2><p class="blk-sub" id="q-sub"></p></section>
+        <section class="blk">
+          <h3>Les rues autour</h3>
+          <div class="rank" id="rk-rue"></div>
+        </section>
         <section class="blk">
           <h3 id="tr-title"></h3>
           <p class="blk-sub" id="tr-sub"></p>
           <div id="tr-chart"></div>
           <p class="d-note" id="tr-note"></p>
         </section>
-        <section class="blk">
-          <h3>Classements</h3>
-          <div class="rank" id="rk-rue"></div>
-          <div class="rank" id="rk-q"></div>
-        </section>
+        <section class="blk"><h3>Le détail</h3><div class="kpis" id="kpis"></div></section>
       </div>
 
       <p class="foot">Ventes enregistrées chez le notaire de 2014 au 31 décembre 2025 (DGFiP, via Etalab et Cerema DVF+). Diagnostics : ADEME. Plan et photos aériennes : IGN.</p>
@@ -1116,7 +1132,7 @@ window.VM_START=function(DATA){
     if(vals.length>=3){
       var k = vals.length>=6 ? 1 : 0;
       r.lo = vals[k]; r.hi = vals[vals.length-1-k];
-      r.medAdj = median(top.map(function(x){return x.adj;}));
+      r.medAdj = median((EXPLORE?pool:top).map(function(x){return x.adj;}));
     }
     return r;
   }
@@ -1345,7 +1361,7 @@ window.VM_START=function(DATA){
   function renderQuartier(){
     var Q=D.quartier; if(!Q) return;
     var P=(last&&last.pool)||[], nom=state.type==='B'?'logements':(state.type==='M'?'maisons':'appartements');
-    $('q-title').textContent='Le marché pour vos critères';
+    $('q-title').textContent='Le marché autour de ce point';
     $('q-sub').textContent=(state.zone&&state.zone.mode==='in'?'Dans la zone que vous avez dessinée':'Autour du '+S.rue)+' : '+(state.filtTxt||'')+'. Modifiez les filtres en haut pour changer ces chiffres.';
     var pm=function(L){ return L.length ? median(L.map(function(x){ return x.p/x.s; })) : null; };
     var f0=String(state.from), t0=String(state.to), yF=yr(P,f0), y25=yr(P,t0), nY=state.to-state.from+1, per=state.from===state.to?'en '+f0:'de '+f0+' à '+t0;
@@ -1356,23 +1372,24 @@ window.VM_START=function(DATA){
     T.push([nf.format(P.length), nom+(nom==='maisons'?' vendues ':' vendus ')+per, nY>1 ? 'environ '+nf.format(Math.round(P.length/nY))+' par an, '+y25.length+' en '+t0 : '']);
     T.push([P.length? nf.format(Math.round(median(tot)/1000))+' 000 €':'–', 'prix médian'+r2025, P.length? 'pour '+nf.format(Math.round(median(P.map(function(x){return x.s;}))))+' m² en médiane'+few(P.length):'']);
     T.push([P.length? nf.format(Math.round(median(adj)/10)*10)+' €':'–', 'le m² médian'+r2025, P.length>=8? 'la moitié des ventes entre '+nf.format(Math.round(q(adj,.25)/10)*10)+' et '+nf.format(Math.round(q(adj,.75)/10)*10)+' €':'']);
+    if(EXPLORE) T.splice(2,1);
     var g=(yF.length&&y25.length&&state.from<state.to) ? Math.round((pm(y25)/pm(yF)-1)*100) : null;
-    T.push([g===null?'–':sgn(g),'évolution du m² de '+f0+' à '+t0, g===null?'Choisissez une période plus longue.':'de '+nf.format(Math.round(pm(yF)))+' à '+nf.format(Math.round(pm(y25)))+' €'+few(Math.min(yF.length,y25.length))]);
+    if(!EXPLORE) T.push([g===null?'–':sgn(g),'évolution du m² de '+f0+' à '+t0, g===null?'Choisissez une période plus longue.':'de '+nf.format(Math.round(pm(yF)))+' à '+nf.format(Math.round(pm(y25)))+' €'+few(Math.min(yF.length,y25.length))]);
     // reventes : meme adresse, surface proche, au moins un an d'ecart
     var by={}, tol=state.type==='A'?0.05:0.15, G=[], Yh=[];
     P.forEach(function(x){ if(/^\d/.test(x.a)) (by[x.a.toLowerCase()]=by[x.a.toLowerCase()]||[]).push(x); });
     Object.keys(by).forEach(function(k){ var L=by[k].sort(function(a,b){ return a.d<b.d?-1:1; });
       for(var i=1;i<L.length;i++){ var u=L[i-1], v=L[i], yrs=((+v.d.slice(0,4))*12+(+v.d.slice(5,7))-(+u.d.slice(0,4))*12-(+u.d.slice(5,7)))/12;
         if(yrs>=1 && Math.abs(u.s-v.s)/u.s<=tol){ G.push(v.p/u.p-1); Yh.push(yrs); } } });
-    T.push(G.length>=5 ? [sgn(Math.round(median(G)*100)),'à la revente, en médiane','revendues après '+nf.format(Math.round(median(Yh)*10)/10)+' ans, travaux compris ('+G.length+' reventes)'] : ['–','à la revente','Pas assez de reventes avec ces filtres.']);
+    T.push(G.length>=5 ? [sgn(Math.round(median(G)*100)),'quand un même bien est revendu','gain médian, revente après '+nf.format(Math.round(median(Yh)*10)/10)+' ans, souvent après travaux ('+G.length+' reventes'+(G.length<30?' : à lire avec prudence':'')+')'] : ['–','à la revente','Pas assez de reventes avec ces filtres.']);
     var e=last&&last.est;
-    if(state.unlocked && e && sameType() && P.length>=8){ var me=e.mid/S.s, pc=Math.round(100*adj.filter(function(v){ return v<me; }).length/adj.length);
+    if(!EXPLORE && e && sameType() && P.length>=8){ var me=e.mid/S.s, pc=Math.round(100*adj.filter(function(v){ return v<me; }).length/adj.length);
       T.push([pc+' %', 'des ventes retenues sont moins chères que votre bien au m²', 'votre bien : '+nf.format(Math.round(me/10)*10)+' €/m² estimés']); }
-    else T.push(['?', 'votre place dans le marché', state.unlocked?'Élargissez les filtres pour la calculer.':'Visible une fois votre estimation obtenue.']);
+    else if(!EXPLORE) T.push(['?', 'votre place dans le marché', 'Élargissez les filtres pour la calculer.']);
     $('kpis').innerHTML=T.map(function(x){ return '<div class="kpi"><b>'+x[0]+'</b><span>'+x[1]+'</span><small>'+x[2]+'</small></div>'; }).join('');
     drawTrend();
     var by={};
-    P.forEach(function(x){ var k=rueKey(x.a); (by[k]=by[k]||{nm:x.a.replace(/^\d+\s*(B|BIS|TER)?\s+/i,''),v:[]}).v.push(x.adj); });
+    P.forEach(function(x){ var k=rueKey(x.a); (by[k]=by[k]||{nm:x.a.replace(/^\d+\s*(?:(?:BIS|TER|B|T|Q)\b)?\s*/i,''),v:[]}).v.push(x.adj); });
     var R=Object.keys(by).map(function(k){ return {k:k, nm:by[k].nm, v:median(by[k].v), n:by[k].v.length}; }).filter(function(o){ return o.n>=4; }).sort(function(a,b){ return b.v-a.v; });
     var ri=R.findIndex(function(o){ return o.k===MYRUE; });
     if(R.length>=3 && ri>=0){
@@ -1382,9 +1399,22 @@ window.VM_START=function(DATA){
         '<p class="rk-foot">En tête : '+R.slice(0,3).map(function(o){ return esc(o.nm)+' ('+nf.format(Math.round(o.v/10)*10)+' €)'; }).join(', ')+'. Rues avec au moins 4 ventes avec vos filtres.</p>';
     } else $('rk-rue').innerHTML='<p class="rk-foot"><b>Classement de votre rue :</b> pas assez de ventes par rue avec ces filtres. Élargissez le rayon, la période ou la surface.</p>';
     var QQ=Q.quartiers, qi=QQ.findIndex(function(x){ return x[0]===Q.name; }), qm=QQ[0][1];
+    (function(){ var h=$('q-hero'); h.hidden=!EXPLORE; if(!EXPLORE) return;
+      if(P.length<8){ h.innerHTML='<span class="qh-lab">Autour de ce point</span><p class="qh-sub">Trop peu de ventes avec ces filtres. Élargissez le rayon ou la période.</p>'; return; }
+      var m2=Math.round(median(adj)/10)*10, ms=Math.round(median(P.map(function(x){return x.s;}))), mt=Math.round(median(tot)/1000)*1000;
+      var ch=[];
+      if(g!==null) ch.push('<b>'+sgn(g)+'</b><span>sur le m² de '+f0+' à '+t0+'</span>');
+      if(qi>=0) ch.push('<b>'+ord(qi+1)+' <small>/ '+QQ.length+'</small></b><span>'+esc(Q.name)+(qi===0?', secteur le plus cher':' parmi les secteurs')+'</span>');
+      if(R.length>=3 && ri>=0) ch.push('<b>'+ord(ri+1)+' <small>/ '+R.length+'</small></b><span>'+esc(R[ri].nm)+' parmi les rues autour</span>');
+      else ch.push('<b>'+nf.format(P.length)+'</b><span>ventes réelles retenues</span>');
+      h.innerHTML='<span class="qh-lab">Le m² médian autour de ce point</span><div class="qh-big">'+nf.format(m2)+' €<small>/m²</small></div>'+
+        (P.length>=8?'<p class="qh-sub">La moitié des ventes entre '+nf.format(Math.round(q(adj,.25)/10)*10)+' et '+nf.format(Math.round(q(adj,.75)/10)*10)+' €/m².</p>':'')+'<p class="qh-sub" style="font-weight:400;color:var(--muted)">Soit '+nf.format(mt)+' € pour '+(state.type==='M'?'une maison':(state.type==='A'?'un appartement':'un logement'))+' type de '+ms+' m², d\'après '+nf.format(P.length)+' ventes réelles '+per+'.</p>'+
+        '<div class="qh-chips">'+ch.map(function(c){ return '<div class="qh-chip">'+c+'</div>'; }).join('')+'</div>'; })();
     $('rk-q').hidden = qi<0; if(qi<0) return;
-    $('rk-q').innerHTML='<div class="rk-top"><div class="rk-n">'+ord(qi+1)+'</div><div class="rk-t"><b>'+Q.name+' : quartier le '+(qi===0?'plus cher':ordT(qi+1)+' plus cher')+' de l\'agglomération</b><span>Prix médian au m² des maisons, ventes 2024 et 2025. Repère fixe, indépendant des filtres.</span></div></div>'+
-      '<div class="rk-rows">'+QQ.map(function(x,i){ var c=i===qi?' me':''; return '<span class="nm'+c+'">'+esc(x[0])+'</span><span class="br'+c+'" style="width:'+(x[1]/qm*100).toFixed(1)+'%"></span><span class="vl'+c+'">'+nf.format(x[1])+' €</span>'; }).join('')+'</div>';
+    $('rk-q').innerHTML='<div class="rk-top"><div class="rk-n">'+ord(qi+1)+'</div><div class="rk-t"><b>'+Q.name+' : quartier le '+(qi===0?'plus cher':ordT(qi+1)+' plus cher')+' de l\'agglomération</b><span>Classement des '+QQ.length+' secteurs de l\'agglomération, prix médian au m² des maisons vendues en 2024 et 2025. Repère fixe : il ne bouge pas avec vos filtres.</span></div></div>'+
+      (function(){ var row=function(x,i){ var c=i===qi?' me':''; return '<span class="nm'+c+'">'+ordT(i+1)+'. '+esc(x[0])+'</span><span class="br'+c+'" style="width:'+(x[1]/qm*100).toFixed(1)+'%"></span><span class="vl'+c+'">'+nf.format(x[1])+' €</span>'; };
+        var keep=QQ.map(function(x,i){ return (i<3||Math.abs(i-qi)<=1||i===QQ.length-1)?i:-1; }).filter(function(i){ return i>=0; });
+        return '<div class="rk-rows">'+keep.map(function(i){ return row(QQ[i],i); }).join('')+'</div><details class="rk-more"><summary>Voir les '+QQ.length+' secteurs</summary><div class="rk-rows">'+QQ.map(row).join('')+'</div></details>'; })();
   }
   function histPool(){ var f=state.from, u=state.to; state.from=Y0; state.to=2025; var H=compute().pool; state.from=f; state.to=u; return H; }
   function drawTrend(L){
@@ -1406,7 +1436,7 @@ window.VM_START=function(DATA){
     var lbl=function(y){ return smooth ? (+y-1)+'-'+y.slice(2) : y; };
     var g=function(o){ return Math.round((o[X0[X0.length-1]]/o[X0[0]]-1)*100); };
     $('tr-title').textContent=sgn(g(sec))+' depuis '+lbl(X0[0])+' pour vos critères';
-    $('tr-sub').textContent='Prix médian au m² des ventes qui correspondent à vos filtres, sur tout l\'historique depuis '+Y0+' (la période choisie ne s\'applique pas à ce graphique). Repères, toutes '+nm+' confondues : '+Q.name+' '+sgn(g(mal))+', agglomération '+sgn(g(dk))+'.';
+    $('tr-sub').textContent='Prix médian au m² des ventes qui correspondent à vos filtres, sur tout l\'historique depuis '+Y0+' (la période choisie ne s\'applique pas à ce graphique). Repères, '+(nm==='maisons'?'toutes maisons confondues':'tous appartements confondus')+' : '+Q.name+' '+sgn(g(mal))+', agglomération '+sgn(g(dk))+'.';
     $('tr-note').textContent=(smooth ? 'Peu de ventes par an avec ces filtres : chaque point regroupe deux années (au moins '+nmin+' ventes). ' : 'Chaque point résume au moins '+nmin+' ventes. ')+'Un écart de quelques % d\'un point à l\'autre reste dans le bruit ; c\'est la pente qui compte.';
     var W=400,H=210,l=16,rr=100,tp=24,bt=28, all=[];
     X0.forEach(function(y){ all.push(sec[y],mal[y],dk[y]); });
@@ -1939,20 +1969,21 @@ window.VM_START=function(DATA){
       return ['ext','park','vue','mit'].map(function(id){ return '<div class="wz-grp"><span>'+esc(qLabel(id))+'</span><div class="wz-opts">'+qOpts(id)+'</div></div>'; }).join(''); }},
     {h:function(){ return 'Pourquoi estimez-vous votre bien ?'; }, why:'Pour adapter la suite. Ça ne change pas le prix.', b:function(){
       return '<div class="wz-opts">'+[['cur','Par curiosité'],['v12','Je pense vendre d\'ici 12 mois'],['vlater','Je pense vendre plus tard'],['buy','Je viens d\'acheter'],['other','Autre raison']].map(function(o){ return opt('motive',o[0],o[1],'',W.motive===o[0]); }).join('')+'</div>'; }},
-    {h:function(){ return 'Où vous envoyer votre estimation ?'; }, why:'Elle reste enregistrée dans votre compte : la prochaine fois, vous reprenez là où vous en étiez.', multi:true, contact:true, ready:function(){ return contactOk(); }, b:function(){
+    {h:function(){ return 'Suivre le prix de votre bien'; }, why:'Nous vous envoyons la nouvelle estimation à chaque publication des ventes officielles, environ deux fois par an. Rien d\'autre, et vous vous désinscrivez en un clic.', multi:true, contact:true, ready:function(){ return contactOk(); }, b:function(){
       var s='<div class="wz-grp"><span>Votre e-mail</span><input type="email" class="wz-field" id="wz-email" autocomplete="email" inputmode="email" placeholder="vous@exemple.fr" value="'+esc(W.email||'')+'" aria-label="Votre adresse e-mail"></div>';
       s+='<div class="wz-grp"><span>Et ensuite ?</span><div class="wz-opts">'+
-        opt('call','non','Je ne souhaite pas être appelé','Vous recevez le résultat par e-mail, c\'est tout.',W.call==='non')+
-        opt('call','oui','Être rappelé par notre agent partenaire','Un seul agent, celui de '+esc(S.q)+'.',W.call==='oui')+'</div></div>';
+        opt('call','non','Je ne souhaite pas être appelé','Vous recevez seulement le suivi du prix par e-mail.',W.call==='non')+
+        opt('call','oui','Je pense vendre, rappelez-moi','Pendant la bêta, c\'est le fondateur de Voisinomètre qui vous rappelle.',W.call==='oui')+'</div></div>';
       if(W.call==='oui') s+='<div class="wz-grp"><span>Votre téléphone</span><input type="tel" class="wz-field" id="wz-tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78" value="'+esc(W.tel||'')+'" aria-label="Votre numéro de téléphone"></div>';
-      s+='<details class="story"'+(W.call==='oui'?' open':'')+'><summary>Qui sont nos agents partenaires ?</summary><div>'+
+      s+='<details class="story"'+(W.call==='oui'?' open':'')+'><summary>Et les agents partenaires ?</summary><div><p><b>Pendant la bêta, aucun agent n\'est encore partenaire.</b> Si vous demandez à être rappelé, c\'est nous qui vous appelons. Voici comment nous les choisirons :</p>'+
         '<p><b>Un seul agent par quartier.</b> Pas cinq agences qui vous appellent le même soir : un interlocuteur, choisi pour '+esc(S.q)+'.</p>'+
         '<p><b>Nous le choisissons.</b> Payer ne suffit pas pour devenir partenaire. Nous regardons ses ventes récentes dans le quartier, à quel prix et en combien de temps, ce qu\'en disent ses clients vendeurs. Puis nous le rencontrons.</p>'+
         '<p><b>Il connaît vos rues.</b> Il sait ce qu\'une cour exposée au sud ou un garage changent au prix ici, quelles maisons se sont vendues sans passer par les annonces, et qui cherche en ce moment.</p>'+
         '<p><b>Il vient voir votre bien.</b> L\'état réel, la lumière, les travaux : tout ce que les données ne voient pas. C\'est ce qui donne les 25 derniers points de précision.</p>'+
         '<p><b>Vous restez libre.</b> La visite est gratuite et sans engagement. Si l\'accompagnement ne vous convient pas, dites-le nous : nous changeons d\'agent.</p>'+
-        '<p><b>Comment nous sommes payés.</b> L\'agent nous rémunère pour la mise en relation. Vous ne payez rien.</p></div></details>';
-      s+='<p class="wz-legal">Votre e-mail sert à vous envoyer l\'estimation et à retrouver vos recherches. Si vous demandez à être rappelé, votre téléphone et l\'adresse du bien sont transmis à un seul agent partenaire, et à personne d\'autre. Vous pouvez changer d\'avis ou supprimer votre compte à tout moment depuis « Mon compte ». Dans cet aperçu, rien n\'est envoyé : tout reste dans ce navigateur.</p>';
+        '<p><b>Comment nous serons payés.</b> L\'agent nous rémunérera pour la mise en relation. Vous ne payez rien.</p></div></details>';
+      s+='<input type="text" id="vm-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">';
+      s+='<p class="wz-legal">Votre e-mail sert uniquement au suivi du prix de ce bien. Si vous demandez à être rappelé, votre téléphone et l\'adresse du bien servent à ce rappel. Rien n\'est transmis à une agence sans votre accord explicite. Vos données sont conservées par Voisinomètre (NOVAMALO) trois ans au plus après votre dernier contact. Pour les consulter, les corriger ou les supprimer, répondez simplement à l\'un de nos e-mails.</p>';
       return s; }}
   ];
   function renderRes(){
@@ -2108,16 +2139,30 @@ window.VM_START=function(DATA){
     $('f-surf').value=S.s; $('f-dpe').value=state.dpe||''; state.zone=sn.zone||null;
     state.sug='off'; autoSug();
   }
+  var VM_API='https://script.google.com/macros/s/AKfycbwsbQf7O1HNNkzNb9FpnKkEOmdBs37Ek23xCJdoHhnJ5ueJ3EiefTxNG5JGdXzgS64KbA/exec', OQ='vm-out';
+  function vmPost(o){ return fetch(VM_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(o),keepalive:true}).then(function(r){ return r.json(); }).then(function(j){ if(!j||!j.ok) throw 0; }); }
+  function vmQ(f){ try{ var q=JSON.parse(localStorage.getItem(OQ)||'[]'); q=f(q)||[]; if(q.length) localStorage.setItem(OQ,JSON.stringify(q.slice(-20))); else localStorage.removeItem(OQ); }catch(e){} }
+  function vmSend(o){ var hp=$('vm-hp'); o.site=hp?hp.value:''; o.page=location.href.slice(0,200); o.navigateur=navigator.userAgent.slice(0,200);
+    vmPost(o).catch(function(){ vmQ(function(q){ q.push(o); return q; }); }); }
+  function vmFlush(){ vmQ(function(q){ q.forEach(function(o){ vmPost(o).then(function(){ vmQ(function(r){ return r.filter(function(x){ return JSON.stringify(x)!==JSON.stringify(o); }); }); }).catch(function(){}); }); return q; }); }
+  setTimeout(vmFlush, 4000);
+  function vmLead(origine){ var e=last&&last.est, B=(typeof rBudget==='function')?rBudget():null;
+    var o={origine:origine, email:W.email, telephone:W.call==='oui'?W.tel:'', rappel_agent:W.call==='oui', consentement_agent:false,
+      adresse:(S.rue||'')+(S.city?', '+S.city:''), secteur:S.q||'', type_bien:state.type==='A'?'appartement':(state.type==='B'?'les deux':'maison'), surface_m2:S.s, dpe:state.dpe||'',
+      estimation_basse:e?k1000(e.lo):'', estimation:e?k1000(e.mid):'', estimation_haute:e?k1000(e.hi):''};
+    if(origine==='recherche'){ o.zone=(state.zone&&state.zone.mode==='in'?'zone dessinée autour de ':'autour de ')+(S.rue||''); o.budget=B&&B.total?k5(B.total):''; o.a_vendre=R.vend==='oui'; }
+    vmSend(o); }
   function createAcct(){
     var fresh=!ACCT || ACCT.email!==W.email;
     if(fresh) ACCT={email:W.email, searches:[], created:new Date().toISOString().slice(0,10)};
     ACCT.on=true; ACCT.call=W.call; ACCT.tel=W.call==='oui'?W.tel:''; state.unlocked=true;
     saveSearch(); welcome(fresh?'new':'back'); renderAcct();
+    vmLead(W.back==='r'?'recherche':'estimation');
   }
   function fmtD(d){ var p=d.split('-'); return +p[2]+' '+MONTHS[+p[1]-1]+' '+p[0]; }
   function welcome(kind, sn){
     var w=$('welcome');
-    if(kind==='new') w.innerHTML='<span>Votre compte est créé. Vos réponses sont enregistrées : la prochaine fois, connectez-vous avec votre e-mail, sans mot de passe.</span>'+(ACCT.call==='oui'?'<span>Version de test : votre demande de rappel est notée sur cet appareil, aucun agent n\'est encore prévenu.</span>':'');
+    if(kind==='new') w.innerHTML='<span>C\'est noté. Vos réponses restent aussi dans ce navigateur : la prochaine fois, vous reprenez là où vous en étiez.</span>'+'<span>'+(ACCT.call==='oui'?'Demande de rappel bien reçue : nous vous appelons sous 48 h ouvrées.':'Suivi du prix activé : prochain envoi à la publication des ventes officielles.')+'</span>';
     else if(kind==='back') w.innerHTML='<span>Bon retour. Votre estimation du '+esc(fmtD(sn?sn.d:new Date().toISOString().slice(0,10)))+' est reprise là où vous l\'aviez laissée.</span><button type="button" id="redo">Refaire le questionnaire</button>';
     w.hidden=false;
   }
@@ -2230,9 +2275,9 @@ window.VM_START=function(DATA){
       z.innerHTML='<h3>Dans la zone que vous explorez</h3><p>'+(state.zone&&state.zone.mode==='in'?'Dans votre zone dessinée':'Autour du '+esc(S.rue))+', avec vos filtres : '+nf.format(Math.round(pm))+' €/m² en médiane (prix ramenés à 2025), soit environ <b>'+nf.format(Math.round(m2))+' m²</b> pour votre budget.</p><p class="muted">'+ok+' des '+P.length+' '+nom+' vendus dans cette sélection seraient dans votre budget aux prix de 2025.</p><button type="button" class="lk2" data-rgo="carte">Voir ces ventes sur la carte</button>';
     } else z.innerHTML='<h3>Dans la zone que vous explorez</h3><p class="muted">Trop peu de ventes avec vos filtres actuels. Élargissez le rayon dans Explorer.</p><button type="button" class="lk2" data-rgo="carte">Aller à la carte</button>';
     var on=ACCT&&ACCT.on;
-    ld.innerHTML='<h3>Être prévenu en premier</h3><p>Les agents partenaires de l\'agglomération pourront vous proposer les biens de ce budget avant leur mise en ligne.</p>'+
-      (on ? (R.saved ? '<p class="ok">Recherche enregistrée sur cet appareil le '+esc(fmtD(R.saved))+'.</p>' : '<button type="button" class="cta" data-rgo="save">Enregistrer ma recherche</button>') : '<button type="button" class="cta" data-rgo="acct">Créer mon compte et enregistrer</button>')+
-      '<p class="muted">Version de test : votre recherche reste sur cet appareil, aucun agent n\'est encore prévenu.</p>';
+    ld.innerHTML='<h3>Être prévenu en premier</h3><p>Recevez un e-mail quand un bien de ce budget se vend dans votre zone, avec son prix réel.</p>'+
+      (on ? (R.saved ? '<p class="ok">Recherche enregistrée le '+esc(fmtD(R.saved))+' : nous vous écrivons quand un bien de ce budget se vend dans la zone.</p>' : '<button type="button" class="cta" data-rgo="save">Enregistrer ma recherche</button>') : '<button type="button" class="cta" data-rgo="acct">Créer mon compte et enregistrer</button>')+
+      '<p class="muted">Pendant la bêta, les alertes sont préparées à la main. Ni vos revenus ni votre capital restant dû ne quittent ce navigateur.</p>';
   }
   var pr=$('pane-r');
   pr.addEventListener('click',function(e){
@@ -2242,7 +2287,7 @@ window.VM_START=function(DATA){
     else if(b.dataset.rv){ R.vend=b.dataset.rv; rSave(); renderRech(); }
     else if(b.dataset.rgo==='bien'){ setTab('b'); if(EXPLORE) openWiz(0); }
     else if(b.dataset.rgo==='carte'){ setTab('q'); }
-    else if(b.dataset.rgo==='save'){ R.saved=new Date().toISOString().slice(0,10); var B=rBudget(); ACCT.recherche={budget:k5(B.total), mode:R.mode, vend:R.vend, type:state.type, zone:state.zone||null, centre:S.rue, d:R.saved}; accSave(); rSave(); renderRech(); }
+    else if(b.dataset.rgo==='save'){ R.saved=new Date().toISOString().slice(0,10); var B=rBudget(); ACCT.recherche={budget:k5(B.total), mode:R.mode, vend:R.vend, type:state.type, zone:state.zone||null, centre:S.rue, d:R.saved}; accSave(); rSave(); renderRech(); W.email=ACCT.email; W.call=ACCT.call; W.tel=ACCT.tel; vmLead('recherche'); }
     else if(b.dataset.rgo==='acct'){ W.call=W.call||'non'; W.back='r'; openWiz(STEPS.length-1); }
   });
   pr.addEventListener('input',function(e){
@@ -2270,5 +2315,3 @@ window.VM_START=function(DATA){
 window.addEventListener('error',function(ev){ var b=document.getElementById('boot'); if(b){ b.hidden=false; b.querySelector('p').textContent='Erreur : '+(ev.message||'')+' ('+(ev.lineno||'')+')'; } });
 window.VM_BOOT().then(function(d){ try{ window.VM_START(d); document.getElementById('boot').hidden=true; }catch(e){ var b=document.getElementById('boot'); b.querySelector('p').textContent='Erreur au démarrage : '+e.message+' | '+String(e.stack||'').split('\n').slice(0,3).join(' | '); } }).catch(function(e){ var b=document.getElementById('boot'); b.querySelector('p').textContent='Le chargement a échoué : '+e.message; });
 </script>
-
-</body></html>
