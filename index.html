@@ -572,6 +572,55 @@ body.m-bien .panel-scroll.wiz-on>.tabs{max-width:640px}
   .fiche{top:100px;bottom:auto}
   .ctl-zoom{top:12px}
 }
+
+/* V46 : filtres en panneau, zone, verificateur */
+.ctl-filt{right:12px;top:12px}
+.mapwrap .ctl-zoom{top:60px}
+.ctl-filt button{gap:6px;padding:9px 14px;font-size:14px}
+.fbadge{display:inline-flex;min-width:19px;height:19px;border-radius:10px;background:var(--tape);color:var(--tape-ink);font-size:11.5px;font-weight:800;align-items:center;justify-content:center;padding:0 5px}
+.fbadge:empty{display:none}
+.filt #chips,.filt #filt-sum,.filt .filt-note{display:none!important}
+.fline{font-size:14px;font-weight:500;line-height:1.4}
+.zseg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:3px;background:var(--soft);border:1px solid var(--line);border-radius:10px}
+.zseg button{border:0;background:none;border-radius:8px;padding:7px 4px;font-size:13px;font-weight:600;color:var(--muted)}
+.zseg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(19,32,42,.16)}
+.drawer.sheet{position:fixed;z-index:60;top:76px;right:16px;width:400px;max-height:calc(100vh - 100px);overflow:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 18px 50px rgba(19,32,42,.3);border-radius:16px;padding:16px 16px 0;font-family:var(--font-body)}
+.drawer-bg{position:fixed;inset:0;z-index:59;background:rgba(19,32,42,.28)}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sheet-h b{font-family:var(--font-display);font-size:20px;font-weight:700}
+.sheet-x{border:0;background:var(--soft);color:var(--ink);border-radius:50%;width:34px;height:34px;font-size:20px;line-height:1}
+.sheet-go{position:sticky;bottom:0;margin:4px -16px 0;padding:12px 16px 16px;background:var(--surface);border-top:1px solid var(--line)}
+.sheet-go button{width:100%;background:var(--ink);color:var(--surface);border:0;border-radius:12px;padding:13px;font-weight:700;font-size:15px}
+@media (max-width:859px){ .drawer.sheet{left:0;right:0;bottom:0;top:auto;width:auto;max-height:84vh;border-radius:18px 18px 0 0;border-bottom:0} }
+.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (min-width:860px){ .bar nav.tabs{width:540px} }
+.tabs button{white-space:nowrap}
+.tabs .ts{display:none}
+@media (max-width:859px){ .bar .tabs button{padding:6px 2px;font-size:13.5px} .tabs .tl{display:none} .tabs .ts{display:inline} }
+body.m-rech .panel-scroll>#pane-v{max-width:760px}
+.vf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vf .vf-f{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:var(--muted)}
+.vf select{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%}
+.vf-in{position:relative;display:block}
+.vf-in i{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--muted)}
+.vf .zseg{grid-template-columns:1fr 1fr}
+@media (max-width:520px){ .vf{grid-template-columns:1fr} }
+.v-res{border:1px solid var(--line);border-left-width:7px;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:3px}
+.v-res.v-ok{border-left-color:#2e9e5b}.v-res.v-bas{border-left-color:#3f84c8}.v-res.v-moy{border-left-color:#e3a20c}.v-res.v-haut{border-left-color:#c8442a}
+.v-lab{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.v-big{font-family:var(--font-display);font-weight:800;font-size:42px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.v-t{font-weight:700;font-size:17px}
+.v-gauge{position:relative;height:30px;margin:6px 8px 0}
+.v-gauge::before{content:"";position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:var(--line)}
+.v-band{position:absolute;top:6px;height:18px;border-radius:4px;background:var(--tape);border:1px solid var(--tape-edge)}
+.v-mid{position:absolute;top:2px;width:2px;height:26px;margin-left:-1px;background:var(--tape-ink)}
+.v-px{position:absolute;top:7px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--ink);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--ink)}
+.v-leg{display:flex;justify-content:space-between;gap:6px 14px;flex-wrap:wrap;font-size:13.5px}
+.v-list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.v-list>div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-top:1px solid var(--line);font-size:14px}
+.v-list>div:first-child{border-top:0}
+.v-list small{display:block;color:var(--muted);font-size:12.5px;font-weight:400}
+.v-list b{font-variant-numeric:tabular-nums;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.panel,.world.is-anim,.tape-band,.tape-band2{transition:none}}
 
 /* ===== Page « Mon bien » : pleine largeur, sans carte ===== */
@@ -700,8 +749,9 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
     </button>
     <nav class="tabs" role="tablist" aria-label="Pages">
       <button type="button" role="tab" id="tab-q" aria-selected="false" aria-controls="pane-q">Explorer</button>
-      <button type="button" role="tab" id="tab-r" aria-selected="false" aria-controls="pane-r">Ma recherche</button>
+      <button type="button" role="tab" id="tab-r" aria-selected="false" aria-controls="pane-r"><span class="tl">Ma recherche</span><span class="ts">Recherche</span></button>
       <button type="button" role="tab" id="tab-b" aria-selected="true" aria-controls="pane-b">Mon bien</button>
+      <button type="button" role="tab" id="tab-v" aria-selected="false" aria-controls="pane-v">Annonce</button>
     </nav>
     <span class="bar-note">Aperçu sur ventes réelles</span>
     <button type="button" class="acct-btn" id="acct-btn" aria-expanded="false" aria-controls="acct-pop"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.5" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2.5 14.5c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span id="acct-lab">Mon compte</span></button>
@@ -736,10 +786,13 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
         <div class="filt-head"><div><b>Filtres</b><small id="filt-count"></small></div>
           <span class="filt-acts"><button type="button" class="filt-reset" id="filt-reset">Réinitialiser</button><button type="button" class="filt-btn" id="drawer-btn" aria-expanded="false" aria-controls="drawer"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" stroke-width="1.6"/><circle cx="4" cy="3" r="1.8" fill="currentColor"/><circle cx="10" cy="7" r="1.8" fill="currentColor"/><circle cx="6" cy="11" r="1.8" fill="currentColor"/></svg><span id="drawer-lab">Modifier</span></button></span></div>
         <div class="chips" id="chips"></div>
+        <p class="fline" id="fline"></p>
+        <div class="zseg" id="zseg" role="group" aria-label="Zone analysée"><button type="button" data-zs="rad">Autour du point</button><button type="button" data-zs="sec">Mon quartier</button><button type="button" data-zs="draw">Ma zone</button></div>
         <p class="filt-sum" id="filt-sum"></p>
         <div class="filt-sug" id="filt-sug" hidden></div>
         <p class="filt-note">Ils s'appliquent à tout : estimation, comparaison, ventes et quartier. Seule exception, l'étiquette DPE ne change pas l'estimation : chaque vente y est déjà corrigée de son DPE.</p>
-        <div class="drawer" id="drawer" hidden>
+        <div class="drawer" id="drawer" hidden role="dialog" aria-label="Filtres">
+          <div class="sheet-h"><b>Filtres</b><button type="button" class="sheet-x" id="sheet-x" aria-label="Fermer les filtres">×</button></div>
           <div class="drawer-top"><b id="drawer-count"></b><button type="button" class="linkbtn" id="tune-reset" hidden>Revenir aux réglages de départ</button></div>
           <div class="tune-row">
             <div class="tune-head"><span id="l-type">Comparer avec</span></div>
@@ -792,6 +845,7 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
             <p class="filt-note" style="margin:-2px 0 6px">Pour explorer le marché. L'estimation garde toutes les étiquettes et corrige chaque vente vers la vôtre : filtrer réduirait les ventes comparables sans rien apprendre de plus.</p>
             <div class="dpe-pick" role="group" aria-labelledby="l-dpe" id="dpe-pick"></div>
           </div>
+          <div class="sheet-go"><button type="button" id="sheet-go">Voir les ventes</button></div>
         </div>
       </section>
 
@@ -895,6 +949,21 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
         <section class="rc" id="r-zone"></section>
         <section class="rc" id="r-lead"></section>
       </div>
+      <div class="pane" id="pane-v" role="tabpanel" aria-labelledby="tab-v" hidden>
+        <section class="rc">
+          <h2>Vérifier le prix d'une annonce</h2>
+          <p class="muted">Vous avez vu un bien sur Leboncoin, SeLoger ou en vitrine ? Recopiez ce que dit l'annonce : on le compare aux ventes réelles du même secteur.</p>
+          <div class="vf">
+            <label class="vf-f">Secteur ou commune<select id="v-sec"></select></label>
+            <label class="vf-f">Rue (facultatif)<input type="text" id="v-rue" placeholder="ex. rue de la Colline" autocomplete="off"></label>
+            <div class="vf-f">Type<div class="zseg" id="v-type" role="group" aria-label="Type de bien"><button type="button" data-vt="M" aria-pressed="true">Maison</button><button type="button" data-vt="A" aria-pressed="false">Appartement</button></div></div>
+            <label class="vf-f">DPE de l'annonce<select id="v-dpe"><option value="">Je ne sais pas</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></label>
+            <label class="vf-f">Surface habitable<span class="vf-in"><input type="number" id="v-surf" min="10" max="500" inputmode="numeric" placeholder="90"><i>m²</i></span></label>
+            <label class="vf-f">Prix affiché<span class="vf-in"><input type="number" id="v-prix" min="10000" step="1000" inputmode="numeric" placeholder="250000"><i>€</i></span></label>
+          </div>
+        </section>
+        <section class="rc" id="v-out"><p class="muted">Indiquez au moins la surface et le prix affiché.</p></section>
+      </div>
       <div class="pane" id="pane-q" role="tabpanel" aria-labelledby="tab-q" hidden>
         <section class="qhead blk" hidden><h2 id="q-title"></h2><p class="blk-sub" id="q-sub"></p></section>
         <section class="blk">
@@ -935,6 +1004,7 @@ body.m-rech .panel-scroll>#pane-r{max-width:760px}
       <div class="map-ctl ctl-lab" role="group" aria-label="Valeur affichée">
         <button type="button" id="lab-m2">€/m²</button><button type="button" id="lab-tot">Prix total</button>
       </div>
+      <div class="map-ctl ctl-filt" role="group" aria-label="Filtres"><button type="button" id="filt-map" aria-controls="drawer"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" stroke-width="1.6"/><circle cx="4" cy="3" r="1.8" fill="currentColor"/><circle cx="10" cy="7" r="1.8" fill="currentColor"/><circle cx="6" cy="11" r="1.8" fill="currentColor"/></svg>Filtres<span class="fbadge" id="filt-badge"></span></button></div>
       <div class="map-ctl ctl-zoom" role="group" aria-label="Zoom">
         <button type="button" id="zoom-in" aria-label="Zoomer">+</button>
         <button type="button" id="zoom-out" aria-label="Dézoomer">−</button>
@@ -1102,6 +1172,7 @@ window.VM_START=function(DATA){
   function pip(lat, lon, P){ var c=false; for(var i=0,j=P.length-1;i<P.length;j=i++){ var a=P[i], b=P[j]; if(((a[0]>lat)!==(b[0]>lat)) && (lon < (b[1]-a[1])*(lat-a[0])/(b[0]-a[0])+a[1])) c=!c; } return c; }
   function inZone(x){
     var z=state.zone;
+    if(state.secOnly) return x.q===S.q;
     if(!z) return x.m<=state.radius;
     var ins=pip(x.lat,x.lon,z.pts);
     return z.mode==='in' ? ins : (!ins && x.m<=state.radius);
@@ -1407,7 +1478,7 @@ window.VM_START=function(DATA){
       if(qi>=0) ch.push('<b>'+ord(qi+1)+' <small>/ '+QQ.length+'</small></b><span>'+esc(Q.name)+(qi===0?', secteur le plus cher':' parmi les secteurs')+'</span>');
       if(R.length>=3 && ri>=0) ch.push('<b>'+ord(ri+1)+' <small>/ '+R.length+'</small></b><span>'+esc(R[ri].nm)+' parmi les rues autour</span>');
       else ch.push('<b>'+nf.format(P.length)+'</b><span>ventes réelles retenues</span>');
-      h.innerHTML='<span class="qh-lab">Le m² médian autour de ce point</span><div class="qh-big">'+nf.format(m2)+' €<small>/m²</small></div>'+
+      h.innerHTML='<span class="qh-lab">'+(state.secOnly?'Le m² médian, tout le secteur '+esc(S.q):(state.zone&&state.zone.mode==='in'?'Le m² médian dans votre zone':'Le m² médian autour de ce point'))+'</span><div class="qh-big">'+nf.format(m2)+' €<small>/m²</small></div>'+
         (P.length>=8?'<p class="qh-sub">La moitié des ventes entre '+nf.format(Math.round(q(adj,.25)/10)*10)+' et '+nf.format(Math.round(q(adj,.75)/10)*10)+' €/m².</p>':'')+'<p class="qh-sub" style="font-weight:400;color:var(--muted)">Soit '+nf.format(mt)+' € pour '+(state.type==='M'?'une maison':(state.type==='A'?'un appartement':'un logement'))+' type de '+ms+' m², d\'après '+nf.format(P.length)+' ventes réelles '+per+'.</p>'+
         '<div class="qh-chips">'+ch.map(function(c){ return '<div class="qh-chip">'+c+'</div>'; }).join('')+'</div>'; })();
     $('rk-q').hidden = qi<0; if(qi<0) return;
@@ -1462,11 +1533,11 @@ window.VM_START=function(DATA){
   }
   document.querySelectorAll('[data-tt]').forEach(function(b){ b.addEventListener('click',function(){ state.tt=this.dataset.tt; drawTrend(); }); });
   function setTab(k){
-    state.tab=k; $('pane-b').hidden=k!=='b'; $('pane-q').hidden=k!=='q'; $('pane-r').hidden=k!=='r';
-    document.body.classList.toggle('m-bien', k==='b' || k==='r'); document.body.classList.toggle('m-rech', k==='r');
+    state.tab=k; $('pane-b').hidden=k!=='b'; $('pane-q').hidden=k!=='q'; $('pane-r').hidden=k!=='r'; $('pane-v').hidden=k!=='v';
+    document.body.classList.toggle('m-bien', k==='b' || k==='r' || k==='v'); document.body.classList.toggle('m-rech', k==='r' || k==='v');
     if(k==='r') renderRech();
     if(k==='q') requestAnimationFrame(function(){ setSnap(isMobile()?'peek':sheet.snap, true); place(); drawMap(); home(true); });
-    $('tab-b').setAttribute('aria-selected',k==='b'); $('tab-q').setAttribute('aria-selected',k==='q'); $('tab-r').setAttribute('aria-selected',k==='r');
+    $('tab-b').setAttribute('aria-selected',k==='b'); $('tab-q').setAttribute('aria-selected',k==='q'); $('tab-r').setAttribute('aria-selected',k==='r'); $('tab-v').setAttribute('aria-selected',k==='v');
     if(k==='q') renderQuartier();
     $('panel-scroll').scrollTop=0;
     if(isMobile() && sheet.snap==='peek') setSnap('half');
@@ -1547,17 +1618,17 @@ window.VM_START=function(DATA){
   }
   function renderChips(r){
     var c=[
-      ['type', state.type==='B'?'Maisons et appartements':(state.type==='M'?'Maisons':'Appartements'), state.type!==sty()],
+      ['type', state.type==='B'?'Maisons et appartements':(state.type==='M'?'Maisons':'Appartements'), state.type!==(EXPLORE?'B':sty())],
       ['surf', surfTxt()==='Toutes'?'Toutes surfaces':surfTxt(), state.sMin!==DEF.sMin||state.sMax!==DEF.sMax],
       ['from', perTxt(), state.from!==DEF.from||state.to!==DEF.to],
-      state.zone ? ['zone', state.zone.mode==='in' ? 'Zone dessinée' : 'Zone exclue, '+state.radius+' m autour', true] : ['radius', state.radius+' m autour', state.radius!==DEF.radius],
+      state.secOnly ? ['zone', 'Tout le secteur '+S.q, true] : state.zone ? ['zone', state.zone.mode==='in' ? 'Zone dessinée' : 'Zone exclue, '+state.radius+' m autour', true] : ['radius', state.radius+' m autour', state.radius!==DEF.radius],
       ['pieces', $('o-pieces').textContent==='Toutes'?'Toutes pièces':$('o-pieces').textContent, state.nMin!==DEF.nMin||state.nMax!==DEF.nMax]
     ];
     if(state.type!=='A') c.push(['terrain', $('o-terrain').textContent==='Tous'?'Tout terrain':'Terrain '+$('o-terrain').textContent, state.tMin!==DEF.tMin||state.tMax!==DEF.tMax]);
     c.push(['dpe', dpeTxt(), !dpeAll()]);
     var open=!$('drawer').hidden;
     $('chips').innerHTML = c.map(function(x){ return '<button type="button" class="chip-f'+(x[2]?' is-set':'')+'" data-go="'+x[0]+'">'+esc(x[1])+'</button>'; }).join('');
-    $('drawer-btn').setAttribute('aria-expanded',open); $('drawer-lab').textContent=open?'Fermer':'Modifier';
+    $('drawer-btn').setAttribute('aria-expanded',open); $('drawer-lab').textContent='Modifier mes filtres';
     $('filt-count').textContent = r.pool.length+(r.pool.length>1?' ventes retenues':' vente retenue');
     state.filtTxt = c.map(function(x){ return x[1]; }).join(', ');
     $('filt-sum').textContent = c.filter(function(x){ return !/^Tou(t|s|tes) /.test(x[1]); }).map(function(x){ return x[1]; }).join(', ');
@@ -1565,8 +1636,13 @@ window.VM_START=function(DATA){
     var nset=c.filter(function(x){ return x[2]; }).length; $('filt-reset').hidden=false; $('filt-reset').disabled=!nset; $('filt-reset').textContent=nset?'Réinitialiser ('+nset+')':'Réglages par défaut'; $('filt-reset').title=nset?'Revenir aux réglages de départ':'Aucun filtre modifié';
     $('drawer-count').textContent = r.pool.length + (r.pool.length>1?' ventes correspondent':' vente correspond');
     renderSug();
+    var nb=c.filter(function(x){ return x[2]; }).length; $('filt-badge').textContent=nb||'';
+    var zl=state.secOnly?'Tout le secteur '+S.q:(state.zone?(state.zone.mode==='in'?'Votre zone dessinée':'Zone exclue, '+state.radius+' m autour'):state.radius+' m autour');
+    $('fline').textContent=[c[0][1], perTxt(), zl].concat(c.filter(function(x){ return x[2] && ['type','from','zone','radius'].indexOf(x[0])<0; }).map(function(x){ return x[1]; })).join(' · ');
+    var zk=state.secOnly?'sec':(state.zone?'draw':'rad'); [].forEach.call($('zseg').children,function(b){ b.setAttribute('aria-pressed', b.dataset.zs===zk); });
+    $('sheet-go').textContent='Voir les '+nf.format(r.pool.length)+' ventes';
   }
-  $('drawer-btn').addEventListener('click',function(){ var d=$('drawer'); d.hidden=!d.hidden; renderChips(last); });
+  $('drawer-btn').addEventListener('click',function(){ if($('drawer').hidden) openF(); else closeF(); });
   $('chips').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     var d=$('drawer');
@@ -1630,9 +1706,9 @@ window.VM_START=function(DATA){
   $('filt-reset').addEventListener('click',function(){ $('tune-reset').click(); });
   $('tune-reset').addEventListener('click',function(){
     for(var k in DEF) state[k]=DEF[k];
-    state.zone=null;
+    state.zone=null; state.secOnly=false;
     state.sug='off';
-    DPES.forEach(function(k){ state.dpeF[k]=true; }); state.type=(S.type==='Maison'?'M':'A');
+    DPES.forEach(function(k){ state.dpeF[k]=true; }); state.type=EXPLORE?'B':(S.type==='Maison'?'M':'A');
     state.sel=null; home(); render();
   });
 
@@ -1758,7 +1834,7 @@ window.VM_START=function(DATA){
     mapEl.classList.toggle('sat', state.layer==='sat');
     if(mapReady){
       MAP.setLayoutProperty('sat','visibility', state.layer==='sat'?'visible':'none');
-      MAP.getSource('ring').setData(fc((state.zone&&state.zone.mode==='in')?[]:[circle(S.lat,S.lon,state.radius)]));
+      MAP.getSource('ring').setData(fc((state.secOnly||(state.zone&&state.zone.mode==='in'))?[]:[circle(S.lat,S.lon,state.radius)]));
       var feats=[]; r.pool.forEach(function(x){ var g=geomOf(x.k); if(!g) return; feats.push({type:'Feature', geometry:g, properties:{id:x.id, t:tone(x,r.medAdj), top:r.top.indexOf(x)>=0, sel:state.sel===x.id}}); });
       MAP.getSource('parcels').setData(fc(feats));
       var inP={}; r.pool.forEach(function(x){ inP[x.id]=1; });
@@ -2078,7 +2154,7 @@ window.VM_START=function(DATA){
     setTimeout(function(){ dragged=false; },0);
     if(!P || P.length<8){ drawMap(); renderZoneCtl(); return; }
     var pts=[], keep=null; P.forEach(function(p){ if(!keep || Math.hypot(keep.sx-p.sx, keep.sy-p.sy)>=10){ pts.push([+p.lat.toFixed(6), +p.lon.toFixed(6)]); keep=p; } });
-    state.zone={pts:pts, mode:(state.zone&&state.zone.mode)||'in'}; state.sel=null; render();
+    state.secOnly=false; state.zone={pts:pts, mode:(state.zone&&state.zone.mode)||'in'}; state.sel=null; render();
   }
   function startDraw(){
     if(state.tab!=='q') setTab('q');
@@ -2114,6 +2190,67 @@ window.VM_START=function(DATA){
   }
   $('ctl-draw').addEventListener('click',function(e){ var b=e.target.closest('[data-z]'); if(b){ e.stopPropagation(); zoneAct(b.dataset.z); } });
   $('zone-row').addEventListener('click',function(e){ var b=e.target.closest('[data-z]'); if(b) zoneAct(b.dataset.z); });
+
+  /* V46 : panneau de filtres et zone */
+  var DRW=$('drawer'), DBG=document.createElement('div'); DBG.className='drawer-bg'; DBG.hidden=true;
+  document.body.appendChild(DBG); document.body.appendChild(DRW); DRW.classList.add('sheet');
+  document.querySelector('.filt').after($('rk-q'));
+  function openF(){ DRW.hidden=false; DBG.hidden=false; renderChips(last); }
+  function closeF(){ DRW.hidden=true; DBG.hidden=true; renderChips(last); }
+  $('filt-map').addEventListener('click',openF);
+  $('sheet-x').addEventListener('click',closeF); $('sheet-go').addEventListener('click',closeF); DBG.addEventListener('click',closeF);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !DRW.hidden) closeF(); });
+  $('zseg').addEventListener('click',function(e){
+    var b=e.target.closest('[data-zs]'); if(!b) return; var k=b.dataset.zs;
+    if(k==='draw'){ if(state.zone) return; state.secOnly=false; if(isMobile()) setSnap('peek'); zoneAct('draw'); return; }
+    state.secOnly = k==='sec'; state.zone=null; state.sel=null; home(); render();
+  });
+
+
+  /* ---------- Verificateur d'annonce (V46) ---------- */
+  var V={ty:'M'};
+  (function(){ var cnt={}; D.sales.forEach(function(x){ if(x.q && !/^\d+$/.test(x.q)) cnt[x.q]=(cnt[x.q]||0)+1; });
+    $('v-sec').innerHTML=Object.keys(cnt).filter(function(k){ return cnt[k]>=40; }).sort(function(a,b){ return a.localeCompare(b,'fr'); }).map(function(k){ return '<option>'+esc(k)+'</option>'; }).join(''); })();
+  function vNorm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/^\d+\s*(bis|ter|b|t|q)?\s+/,'')
+    .replace(/\b(rue|avenue|av|boulevard|bd|place|pl|chemin|allee|impasse|quai|route|square|cite|residence|de|du|des|la|le|les|l|d)\b/g,' ').replace(/[^a-z0-9]+/g,' ').trim(); }
+  function vMois(d){ return MONTHS[+d.slice(5,7)-1]+' '+d.slice(0,4); }
+  function vCalc(){
+    var sec=$('v-sec').value, ty=V.ty, s=+$('v-surf').value, px=+$('v-prix').value, dpe=$('v-dpe').value, rue=vNorm($('v-rue').value), o=$('v-out');
+    if(!(s>=10 && px>=10000)){ o.innerHTML='<p class="muted">Indiquez au moins la surface et le prix affiché.</p>'; return; }
+    var I=ST.idx[sec], ix=((I&&I[ty])||IDXCUD[ty]);
+    var base=D.sales.filter(function(x){ return x.ty===ty && x.q===sec && x.s>0 && x.p>0 && ix[x.d.slice(0,4)]; });
+    var pick=function(lo,hi,y0,byRue){ return base.filter(function(x){ return x.s>=s*lo && x.s<=s*hi && +x.d.slice(0,4)>=y0 && (!byRue || vNorm(x.a).indexOf(rue)>=0); }); };
+    var lvl='rue', P=rue.length>=3 ? pick(.7,1.4,2019,true) : [];
+    if(P.length<6){ lvl='sec'; P=pick(.8,1.25,2021); }
+    if(P.length<8) P=pick(.65,1.5,2019);
+    if(P.length<5){ o.innerHTML='<p class="muted">Trop peu de ventes comparables à '+esc(sec)+' pour ce type et cette surface. Essayez un secteur voisin.</p>'; return; }
+    var kn=P.filter(function(x){ return x.e; }), eU=kn.length ? kn.reduce(function(a,x){ return a+effOf(x.e); },0)/kn.length : 0, eMe=dpe?effOf(dpe):eU;
+    P.forEach(function(x){ x.vv=x.p/x.s*ix['2025']/ix[x.d.slice(0,4)]/(1+(x.e?effOf(x.e):eU))*(1+eMe); });
+    var v=P.map(function(x){ return x.vv; }).sort(function(a,b){ return a-b; }), qn=function(f){ return v[Math.min(v.length-1,Math.floor(f*(v.length-1)+0.5))]; };
+    var mid=median(v)*s, lo=qn(.25)*s, hi=qn(.75)*s, gap=px/mid-1, g=Math.round(gap*100);
+    var vd = px>hi*1.10 ? ['haut','Au-dessus des ventes réelles','Plus cher que les trois quarts des ventes comparables. Sauf prestation rare (vue, travaux récents, grand terrain), il y a de la marge de négociation.'] :
+             px>hi ? ['moy','Tout en haut de la fourchette','Le prix est au niveau des ventes les plus chères du secteur. Négociable, sauf si le bien est refait à neuf.'] :
+             px>=lo ? ['ok','Dans la fourchette du marché',(px>=mid?'Côté haut de la fourchette : ':'Côté bas de la fourchette : ')+'la moitié des ventes comparables se sont faites dans cette zone de prix.'] :
+                      ['bas','Sous la fourchette du marché','Moins cher que les trois quarts des ventes comparables : bonne affaire ou défaut caché (état, gros travaux, nuisances). À vérifier en visite.'];
+    var mn=Math.min(lo,px)*0.9, mx=Math.max(hi,px)*1.1, X=function(val){ return ((val-mn)/(mx-mn)*100).toFixed(1); };
+    var L=P.slice().sort(function(a,b){ return Math.abs(Math.log(a.s/s))-Math.abs(Math.log(b.s/s)); }).slice(0,8).sort(function(a,b){ return a.d<b.d?1:-1; });
+    var nom=ty==='M'?'maisons':'appartements';
+    o.innerHTML='<div class="v-res v-'+vd[0]+'"><span class="v-lab">Écart avec le prix médian</span><b class="v-big">'+(g>0?'+':'')+g+' %</b><span class="v-t">'+vd[1]+'</span><p class="muted">'+vd[2]+'</p></div>'+
+      '<div class="v-gauge" aria-hidden="true"><div class="v-band" style="left:'+X(lo)+'%;width:'+(X(hi)-X(lo)).toFixed(1)+'%"></div><i class="v-mid" style="left:'+X(mid)+'%"></i><i class="v-px" style="left:'+X(px)+'%"></i></div>'+
+      '<div class="v-leg"><span>Marché : '+eur(k1000(lo))+' à '+eur(k1000(hi))+' (médiane '+eur(k1000(mid))+')</span><span><b>Annonce : '+eur(px)+'</b>, '+nf.format(Math.round(px/s))+' €/m²</span></div>'+
+      '<p class="muted">D\'après '+P.length+' ventes réelles de '+nom+' '+(lvl==='rue'?'dans cette rue':'à '+esc(sec))+', de surface proche, prix ramenés à 2025'+(dpe?' et corrigés vers un DPE '+dpe:'')+'. Précision : '+(lvl==='rue'?'la rue':'le secteur, faute d\'assez de ventes dans la rue')+'. Une annonce sans adresse exacte ne permet pas mieux.</p>'+
+      '<p class="muted">Bon à savoir : les prix notariés sont en général hors frais d\'agence. Une annonce « frais d\'agence inclus » paraît donc 4 à 6 % plus chère qu\'elle ne l\'est.</p>'+
+      '<h3>Les ventes comparables</h3><div class="v-list">'+L.map(function(x){ return '<div><span>'+esc(x.a.replace(/^\d+\s*(?:(?:BIS|TER|B|T|Q)\b)?\s*/i,''))+'<small>'+vMois(x.d)+', '+x.s+' m²'+(x.e?', DPE '+x.e:'')+'</small></span><b>'+eur(k1000(x.p))+'</b></div>'; }).join('')+'</div>'+
+      '<button type="button" class="cta" id="v-alert">Être alerté des ventes de ce type</button>';
+  }
+  $('pane-v').addEventListener('input',vCalc); $('pane-v').addEventListener('change',vCalc);
+  $('v-type').addEventListener('click',function(e){ var b=e.target.closest('[data-vt]'); if(!b) return; V.ty=b.dataset.vt; [].forEach.call(this.children,function(x){ x.setAttribute('aria-pressed',x===b); }); vCalc(); });
+  $('v-out').addEventListener('click',function(e){ if(e.target.id==='v-alert') setTab('r'); });
+  $('tab-v').addEventListener('click',function(){
+    if(W.on){ W.on=false; $('wiz').hidden=true; $('panel-scroll').classList.remove('wiz-on'); $('panel').classList.remove('wiz-on'); render(); }
+    if(!$('v-out').querySelector('.v-res') && S.q && [].some.call($('v-sec').options,function(o){ return o.value===S.q; })) $('v-sec').value=S.q;
+    setTab('v');
+  });
 
   /* ---------- Compte (apercu : enregistre dans ce navigateur) ---------- */
   var AK='vm-acct', ACCT=null;
