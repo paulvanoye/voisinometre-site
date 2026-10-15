@@ -1,3 +1,24 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Toutes les ventes notariées de l'agglomération de Dunkerque sur une carte : prix au m² rue par rue, classement des quartiers, estimation de votre bien et vérification du prix d'une annonce.">
+<meta name="theme-color" content="#13202A">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Voisinomètre">
+<meta property="og:title" content="Voisinomètre : les vrais prix de vente, rue par rue">
+<meta property="og:description" content="Toutes les ventes notariées de l'agglomération de Dunkerque sur une carte : prix au m² rue par rue, classement des quartiers, estimation de votre bien et vérification du prix d'une annonce.">
+<meta property="og:url" content="https://voisinometre.novamalo.fr/">
+<meta property="og:image" content="https://voisinometre.novamalo.fr/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>:root{box-sizing:border-box}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
 <title>Voisinomètre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
@@ -2452,3 +2473,6 @@ window.VM_START=function(DATA){
 window.addEventListener('error',function(ev){ var b=document.getElementById('boot'); if(b){ b.hidden=false; b.querySelector('p').textContent='Erreur : '+(ev.message||'')+' ('+(ev.lineno||'')+')'; } });
 window.VM_BOOT().then(function(d){ try{ window.VM_START(d); document.getElementById('boot').hidden=true; }catch(e){ var b=document.getElementById('boot'); b.querySelector('p').textContent='Erreur au démarrage : '+e.message+' | '+String(e.stack||'').split('\n').slice(0,3).join(' | '); } }).catch(function(e){ var b=document.getElementById('boot'); b.querySelector('p').textContent='Le chargement a échoué : '+e.message; });
 </script>
+
+</body>
+</html>
